@@ -28,6 +28,13 @@ async function run() {
             const result = await upload_posts.insertOne(uploadedPosts);
             res.send(result);
         })
+
+        //get all Uploaded Posts
+        app.get('/upload', async (req, res) => {
+            const query = {};
+            const result = await upload_posts.find(query).toArray();
+            res.send(result);
+        })
     }
     finally {
 
