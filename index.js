@@ -21,6 +21,7 @@ async function run() {
     try {
         //mongodb collections
         const upload_posts = client.db("TalkDiary").collection("uploadImgPost-collection");
+        const new_user_info = client.db("TalkDiary").collection("newUser-info");
 
         //send uploaded posts on database
         app.post('/upload', async (req, res) => {
@@ -32,8 +33,15 @@ async function run() {
         //get all Uploaded Posts
         app.get('/upload', async (req, res) => {
             const query = {};
-            const result = await upload_posts.find(query).toArray();
+            const result = await upload_posts.find(query).sort({ $natural: -1 }).toArray();
             res.send(result);
+        })
+
+        //new user info
+        app.post('/newUser', async (req, res) => {
+            const query = req.body;
+            const user = await new_user_info.insertOne(query);
+            res.send(user);
         })
     }
     finally {
