@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 //middleware
@@ -37,10 +37,26 @@ async function run() {
             res.send(result);
         })
 
+        //get specific Uploaded Posts
+        app.get('/upload/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await upload_posts.findOne(query);
+            res.send(result);
+        })
+
         //new user info
         app.post('/newUser', async (req, res) => {
             const query = req.body;
             const user = await new_user_info.insertOne(query);
+            res.send(user);
+        })
+
+        //get new user info
+        app.get('/newUser', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await new_user_info.find(query).toArray();
             res.send(user);
         })
     }
